@@ -32,15 +32,14 @@ public with sharing class DMLOperations {
     public static Id insertNewAccount() {
         // Create a new Account instance
         // Set some fields on the Account
-        Account acc = new Account(Name='Test Account');
-        
+        Account acc = new Account();
+        acc.Name = 'Cloud Code ' + String.valueOf(Datetime.now().getTime());
         // Insert the Account into the database
-        insert acc;
 
+       insert acc;
 
         // Return the Id of the newly created Account
-        //acc = [SELECT Id, Name FROM Account WHERE Id = :acc.Id];
-
+        acc = [SELECT Id, Name FROM Account WHERE Id = :acc.Id];
 
         return acc.ID;
     }
