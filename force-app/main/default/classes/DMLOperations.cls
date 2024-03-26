@@ -34,8 +34,8 @@ public with sharing class DMLOperations {
         // Set some fields on the Account
         Account acc = new Account();
         acc.Name = 'Cloud Code ' + String.valueOf(Datetime.now().getTime());
-        // Insert the Account into the database
 
+        // Insert the Account into the database
        insert acc;
 
         // Return the Id of the newly created Account
