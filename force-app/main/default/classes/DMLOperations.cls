@@ -52,7 +52,10 @@ public with sharing class DMLOperations {
      */
     public static void createAccount(String name, String industry) {
         // Create a new Account and set the fields inline
-        Account acc = new Account(Name='Cloud Code Electric', Industry='Electronics');
+
+        Account acc = new Account(name='Cloud Code Electric', industry='Electronics');
+        
+        acc = [SELECT Id, Name, Industry FROM Account WHERE Name = :acc.name];
 
         // Insert the Account
         insert acc;
