@@ -53,12 +53,13 @@ public with sharing class DMLOperations {
     public static void createAccount(String name, String industry) {
         // Create a new Account and set the fields inline
 
-        Account acc = new Account(name='Cloud Code Electric', industry='Electronics');
-        
-        acc = [SELECT Id, Name, Industry FROM Account WHERE Name = :acc.name];
+        Account acc = new Account(name=name, industry=industry);
 
         // Insert the Account
         insert acc;
+        
+        Account testAccount = [SELECT Id, Name, Industry FROM Account WHERE Name = :acc.name];
+
     }
 
     
