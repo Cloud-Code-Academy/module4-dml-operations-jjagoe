@@ -159,18 +159,16 @@ public with sharing class DMLOperations {
             // Set the Opportunity's Amount to 50000
 
             Date closeDate = Date.today().addMonths(3);
-            List<Opportunity> oppList = new List<Opportunity>();
+          
             for (Opportunity opp : opportunities){
                 opp.StageName = 'Qualification';
                 opp.CloseDate = closeDate;
                 opp.Amount = 50000;
-                oppList.add(opp);
-                
+    
             }
-           
 
         // Upsert the Opportunity
-           upsert oppList;
+           upsert opportunities;
     }
 
     /**
@@ -185,7 +183,37 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-    }
+            Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+
+            if (acc != null) {
+                List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
+    
+                // Iterate through the list of opportunity names
+                for (String oppName : oppNames) {
+                    // Query existing opportunities with the same name
+                    List<Opportunity> existingOpportunities = [SELECT Id, Name FROM Opportunity WHERE Name = :oppName LIMIT 1];
+    
+                    Opportunity opp;
+                    if (!existingOpportunities.isEmpty()) {
+                        // If opportunity with the same name exists, update it
+                        opp = existingOpportunities[0];
+                        opp.AccountId = acc.Id;
+                    } else {
+                        // If no existing opportunity, create a new one
+                        opp = new Opportunity(Name = oppName, AccountId = acc.Id);
+                    }
+                    opportunitiesToUpsert.add(opp);
+                }
+    
+                // Upsert the opportunities
+                upsert opportunitiesToUpsert;
+            } else {
+                // Handle scenario where Account with the provided name does not exist
+                System.debug('Account with name ' + accountName + ' not found.');
+                // You can throw an exception or handle the scenario based on your requirement
+            }
+        }      
+    
     
     /**
      * Question 9
