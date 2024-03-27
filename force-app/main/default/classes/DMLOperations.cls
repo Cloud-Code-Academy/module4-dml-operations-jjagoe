@@ -159,6 +159,8 @@ public with sharing class DMLOperations {
             // Set the Opportunity's Amount to 50000
 
         // Upsert the Opportunity
+
+
     }
 
     /**
@@ -173,7 +175,32 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-    }
+            Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+    
+            if (acc != null) {
+                // List to hold Opportunity records to be upserted
+                List<Opportunity> oppsToUpsert = new List<Opportunity>();
+                
+                // Loop through each Opportunity name
+                for (String oppName : oppNames) {
+                    // Create an Opportunity with the given name
+                    Opportunity newOpp = new Opportunity(
+                        Name = oppName,
+                        AccountId = acc.Id
+                    );
+                    // Add the Opportunity to the list
+                    oppsToUpsert.add(newOpp);
+                }
+                
+                // Upsert the Opportunities
+                upsert oppsToUpsert;
+            } else {
+                // Account not found, handle error accordingly
+                System.debug('Account not found with name: ' + accountName);
+            }
+        }
+        
+    
     
     /**
      * Question 9
