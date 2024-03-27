@@ -116,10 +116,10 @@ public with sharing class DMLOperations {
         // [SELECT Id FROM Opportunity WHERE Id = :oppId]
         Opportunity newOpportunity = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId];
 
-        // Update the Opportunity's stage
+        // Update the Opportunity's stage.
         newOpportunity.StageName = newStage;
 
-        // Update the Opportunity in the database
+        // Update the Opportunity in the database.
         Update newOpportunity;
     }
 
