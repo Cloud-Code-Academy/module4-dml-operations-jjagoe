@@ -72,18 +72,17 @@ public with sharing class DMLOperations {
     public static Id insertNewContact(Id accountId) {
         // Create a new Contact instance
         // Set some fields on the Contact
+        // Set the AccountId field to the given accountId
         Contact newContact = new Contact(
             AccountId = accountId,
             LastName = 'Jagoe'
         );
 
-        // Set the AccountId field to the given accountId
-
         // Insert the Contact into the database
             insert newContact;
+
         // Return the Id of the newly created Contact
-        //Contact retrievedContact = [SELECT Id, LastName, AccountId FROM Contact WHERE Id = :newContact.AccountId];
-        return newContact.Id;
+           return newContact.Id;
     }
 
     /**
