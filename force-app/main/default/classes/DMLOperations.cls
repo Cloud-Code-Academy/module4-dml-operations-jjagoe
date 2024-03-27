@@ -100,7 +100,7 @@ public with sharing class DMLOperations {
         // Update the Contact's last name
         newContact.LastName = newLastName;
 
-        // Update the Contact in the database
+        // Update the Contact in the database.
         update newContact;
     }
 
