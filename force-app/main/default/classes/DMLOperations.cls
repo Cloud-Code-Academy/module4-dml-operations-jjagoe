@@ -170,7 +170,8 @@ public with sharing class DMLOperations {
            
 
         // Upsert the Opportunity
-           upsert oppList;
+
+
     }
 
     /**
@@ -189,7 +190,7 @@ public with sharing class DMLOperations {
             insert testAccount;
             Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
 
-   // if (acc != null) {
+   
         List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
         
         // Loop through each Opportunity name
@@ -205,9 +206,12 @@ public with sharing class DMLOperations {
             upsert opportunitiesToUpsert;
         }
 
-        //upsert opportunitiesToUpsert;
-   // }
-}
+        
+    }
+              
+            
+               
+    
     
     /**
      * Question 9

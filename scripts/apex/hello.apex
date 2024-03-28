@@ -9,9 +9,13 @@
 //System.debug('Hello World!');
 //System.debug('My name is ' + tempvar);
 
-Account acc = new Account(Name='Test Account1');
+//Account acc = new Account(Name='Test Account');
         
         // Insert the Account into the database
-        System.debug('Before Insert ' + acc);
-        insert acc;
-       System.debug('After Insert ' + acc);
+       // System.debug('Before Insert ' + acc);
+       // insert acc;
+      //System.debug('After Insert ' + acc);
+     // Account acc = [SELECT Id FROM Account WHERE Name = 'Test Account' LIMIT 1];
+     // System.debug('After Insert ' + acc);
+     Account retrievedAcc = [SELECT Id, Name FROM Account WHERE Name = 'Test Account'];
+     System.debug('After Insert ' + retrievedAcc);
