@@ -271,10 +271,10 @@ public with sharing class DMLOperations {
             newCase.Origin = 'Email';
             casesToInsert.add(newCase);
         }
-        // Insert the cases
+        // Insert the cases.
         insert casesToInsert;
       
-        // Delete the cases
+        // Delete the cases.
         delete casesToInsert;
     }
 }
