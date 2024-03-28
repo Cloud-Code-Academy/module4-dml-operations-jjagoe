@@ -175,9 +175,9 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-           // Id newContactId = DMLOperations.insertNewContact(testAccount.Id);
-           // Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
-           // Id accId = retrievedAcc.Id;
+            Id newContactId = DMLOperations.insertNewContact(testAccount.Id);
+            Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
+            Id accId = retrievedAcc.Id;
 
            // if (retrievedAcc != null) {
                 List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
