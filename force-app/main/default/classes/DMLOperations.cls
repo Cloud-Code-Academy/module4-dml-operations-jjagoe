@@ -185,7 +185,28 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
+            Account testAccount = new Account(Name = accountName);
+            insert testAccount;
+            Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+
+    if (acc != null) {
+        List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
+        
+        // Loop through each Opportunity name
+        for (String oppName : oppNames) {
+            // Create a new Opportunity and associate it with the Account
+            Opportunity opp = new Opportunity();
+            opp.Name = oppName;
+            opp.AccountId = acc.Id;
+            opp.StageName = 'Qualification';
+            opp.CloseDate = Date.today().addMonths(3);
+            
+            opportunitiesToUpsert.add(opp);
+        }
+
+        upsert opportunitiesToUpsert;
     }
+}
     
     /**
      * Question 9
