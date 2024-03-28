@@ -175,39 +175,28 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-            Id newContactId = DMLOperations.insertNewContact(testAccount.Id);
-            Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
-            Id accId = retrievedAcc.Id;
+            Account testAccount = new Account(Name = accountName);
+            insert testAccount;
+            Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
 
-           // if (retrievedAcc != null) {
-                List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
-    
-                // Iterate through the list of opportunity names
-                for (String oppName : oppNames) {
-                    // Query existing opportunities with the same name
-                    List<Opportunity> existingOpportunities = [SELECT Id, Name FROM Opportunity WHERE Name = :oppName LIMIT 1];
-    
-                    
-                    Opportunity opp;
-                    
-                    if (!existingOpportunities.isEmpty()) {
-                        // If opportunity with the same name exists, update it
-                        opp = existingOpportunities[0];
-                      //  opp.AccountId = retrievedAcc.Id;
-                    } else {
-                        // If no existing opportunity, create a new one
-                        //opp = new Opportunity(Name = oppName, AccountId = retrievedAcc.Id);
-                    }
-                    opportunitiesToUpsert.add(opp);
-                }
-    
-                // Upsert the opportunities
-                upsert opportunitiesToUpsert;
-           // } else {
-                // Handle scenario where Account with the provided name does not exist
-           //     System.debug('Account with name ' + accountName + ' not found.');
-                // You can throw an exception or handle the scenario based on your requirement
-            }
+   
+        List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
+        
+        // Loop through each Opportunity name
+        for (String oppName : oppNames) {
+            // Create a new Opportunity and associate it with the Account
+            Opportunity opp = new Opportunity();
+            opp.Name = oppName;
+            opp.AccountId = acc.Id;
+            opp.StageName = 'Qualification';
+            opp.CloseDate = Date.today().addMonths(3);
+            
+            opportunitiesToUpsert.add(opp);
+            upsert opportunitiesToUpsert;
+        }
+
+        
+    }
               
             
                
