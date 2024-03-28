@@ -226,7 +226,7 @@ public with sharing class DMLOperations {
 		List<Account> accounts = [SELECT Id FROM Account WHERE Name = :accountName];
 
 		if (!accounts.isEmpty()) {
-        // if the Account exists, update the description
+        // if the Account exists, update the description to Updated Account.
            Account updatedAcc = new Account();
            updatedAcc.Name = accountName;
            updatedAcc.Description = 'Updated Account';
@@ -235,7 +235,7 @@ public with sharing class DMLOperations {
            return updatedAcc;
    
         
-    }  else { // otherwise, create a new Account and set the description
+    }  else { // otherwise, create a new Account and set the description to New Account
         Account acc = new Account();
         acc.Name = accountName;
         acc.Description = 'New Account';
@@ -243,7 +243,7 @@ public with sharing class DMLOperations {
         insert accounts;
         return acc;
     }
-    //return acc;
+   
 }
 		
 	
