@@ -176,8 +176,8 @@ public with sharing class DMLOperations {
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
            // Id newContactId = DMLOperations.insertNewContact(testAccount.Id);
-            Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
-            Id accId = retrievedAcc.Id;
+           // Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
+           // Id accId = retrievedAcc.Id;
 
            // if (retrievedAcc != null) {
                 List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
@@ -187,14 +187,16 @@ public with sharing class DMLOperations {
                     // Query existing opportunities with the same name
                     List<Opportunity> existingOpportunities = [SELECT Id, Name FROM Opportunity WHERE Name = :oppName LIMIT 1];
     
+                    
                     Opportunity opp;
+                    
                     if (!existingOpportunities.isEmpty()) {
                         // If opportunity with the same name exists, update it
                         opp = existingOpportunities[0];
-                        opp.AccountId = retrievedAcc.Id;
+                      //  opp.AccountId = retrievedAcc.Id;
                     } else {
                         // If no existing opportunity, create a new one
-                        opp = new Opportunity(Name = oppName, AccountId = retrievedAcc.Id);
+                        //opp = new Opportunity(Name = oppName, AccountId = retrievedAcc.Id);
                     }
                     opportunitiesToUpsert.add(opp);
                 }
