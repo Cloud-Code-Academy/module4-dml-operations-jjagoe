@@ -189,7 +189,7 @@ public with sharing class DMLOperations {
             insert testAccount;
             Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
 
-    if (acc != null) {
+   // if (acc != null) {
         List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
         
         // Loop through each Opportunity name
@@ -202,10 +202,11 @@ public with sharing class DMLOperations {
             opp.CloseDate = Date.today().addMonths(3);
             
             opportunitiesToUpsert.add(opp);
+            upsert opportunitiesToUpsert;
         }
 
-        upsert opportunitiesToUpsert;
-    }
+        //upsert opportunitiesToUpsert;
+   // }
 }
     
     /**
