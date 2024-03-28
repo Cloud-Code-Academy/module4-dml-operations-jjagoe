@@ -175,9 +175,11 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-            Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+           // Id newContactId = DMLOperations.insertNewContact(testAccount.Id);
+            Account retrievedAcc = [SELECT Id FROM Account WHERE Name = :accountName];
+            Id accId = retrievedAcc.Id;
 
-            if (acc != null) {
+           // if (retrievedAcc != null) {
                 List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
     
                 // Iterate through the list of opportunity names
@@ -189,25 +191,24 @@ public with sharing class DMLOperations {
                     if (!existingOpportunities.isEmpty()) {
                         // If opportunity with the same name exists, update it
                         opp = existingOpportunities[0];
-                        opp.AccountId = acc.Id;
+                        opp.AccountId = retrievedAcc.Id;
                     } else {
                         // If no existing opportunity, create a new one
-                        opp = new Opportunity(Name = oppName, AccountId = acc.Id);
+                        opp = new Opportunity(Name = oppName, AccountId = retrievedAcc.Id);
                     }
                     opportunitiesToUpsert.add(opp);
                 }
     
                 // Upsert the opportunities
                 upsert opportunitiesToUpsert;
-            } else {
+           // } else {
                 // Handle scenario where Account with the provided name does not exist
-                System.debug('Account with name ' + accountName + ' not found.');
+           //     System.debug('Account with name ' + accountName + ' not found.');
                 // You can throw an exception or handle the scenario based on your requirement
             }
               
             
-        }
-        
+               
     
     
     /**
