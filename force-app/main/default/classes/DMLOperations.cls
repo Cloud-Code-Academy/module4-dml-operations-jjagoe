@@ -235,10 +235,22 @@ public with sharing class DMLOperations {
      */
     public static void insertAndDeleteLeads(List<String> leadNames) {
         // Loop through each Lead name
+        List<Lead> leadsToInsert = new List<Lead>();
+        for (String leadName : leadNames) {
+            Lead newLead = new Lead(
+                FirstName = leadName,
+                LastName  = 'Test Last Name',
+                Company   = 'Cloud Code Academy',
+                Status    = 'Open - Not Contacted'
+            );
+           leadsToInsert.add(newlead);
+        }
 
         // Insert the Leads
+        insert leadsToInsert;
 
         // Delete the Leads
+        delete leadsToInsert;
     }
 
 
