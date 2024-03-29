@@ -206,13 +206,8 @@ public with sharing class DMLOperations {
             upsert opportunitiesToUpsert;
         }
 
-        
     }
-              
-            
-               
-    
-    
+ 
     /**
      * Question 9
 	 * Upserts an Account with the specified name.
@@ -247,7 +242,6 @@ public with sharing class DMLOperations {
 }
 		
 	
-
     /**
      * Question 10
 	 * Upserts accounts and links contacts to them based on the contact's last name and account name.
