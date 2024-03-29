@@ -250,32 +250,40 @@ public with sharing class DMLOperations {
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
-	
+	    
+        // Map to hold account names and corresponding accounts
         Map<String, Account> accountMap = new Map<String, Account>();
         // Loop through each Contact
         for (Contact con : contactsToUpsert) {
             // Extract the Account Name from Contact's LastName
+           
             String accountName = con.LastName;
+          
            // Get the account based on the name or create one if it doesn't exist
             Account acc = accountMap.get(accountName);
+            
             if (acc == null) {
-                List<Account> existingAccounts = [SELECT Id, Name FROM Account WHERE Name = :accountName LIMIT 1];
+                List<Account> existingAccounts = [SELECT Id, Name FROM Account WHERE Name = :accountName];
 
                 if (!existingAccounts.isEmpty()) {
                     acc = existingAccounts[0];
+                   
+                                                            
                 } else {
                     // Create a new account if it doesn't exist.
-                    acc = new Account(Name = accountName);
+                    acc = new Account(Name = accountName, AccountNumber = con.AccountId);
                     accountMap.put(accountName, acc);
+                   
                 }
                 // Link the Contact to its Account using the Account Id.
                 con.AccountId = acc.Id;
             }
-               // Upsert the Contacts.
-               upsert contactsToUpsert;
+               
+               // Upsert the Accounts
+              upsert accountMap.values();
 		}
-
-	}
+    }
+        
 
     /**
      * Question 11
