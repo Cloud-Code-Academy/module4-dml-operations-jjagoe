@@ -143,7 +143,6 @@ public with sharing class DMLOperations {
         update newAccount;
     }
 
-
     /**
      * Question 7
      * Create or updates an Opportunities
@@ -164,11 +163,11 @@ public with sharing class DMLOperations {
                 opp.StageName = 'Qualification';
                 opp.CloseDate = closeDate;
                 opp.Amount = 50000;
-    
+                upsert opportunities;
             }
 
         // Upsert the Opportunity.
-           upsert opportunities;
+          // upsert opportunities;
     }
 
     /**
