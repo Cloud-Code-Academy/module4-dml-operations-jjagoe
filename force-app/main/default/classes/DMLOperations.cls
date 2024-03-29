@@ -167,7 +167,7 @@ public with sharing class DMLOperations {
     
             }
 
-        // Upsert the Opportunity
+        // Upsert the Opportunity.
            upsert opportunities;
     }
 

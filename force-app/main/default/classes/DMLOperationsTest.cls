@@ -142,11 +142,11 @@ public with sharing class DMLOperationsTest {
       
         // Assert that the Opportunity was successfully upserted
         System.assertEquals(Opportunities.size(), Opportunities.size(), 'The number of upserted Opportunities should match the number of Opportunity names provided');
-       // for (Opportunity opp : Opportunities) {
-       //     System.assertEquals('Qualification', opp.StageName, 'The stage should be updated to Qualification');
-       //     System.assertEquals(Date.today().addMonths(3), opp.CloseDate, 'The CloseDate should be updated to 3 months from today');
-       //     System.assertEquals(50000, opp.Amount, 'The Amount should be updated to 50000');
-       // }
+        for (Opportunity opp : Opportunities) {
+            System.assertEquals('Qualification', opp.StageName, 'The stage should be updated to Qualification');
+            System.assertEquals(Date.today().addMonths(3), opp.CloseDate, 'The CloseDate should be updated to 3 months from today');
+            System.assertEquals(50000, opp.Amount, 'The Amount should be updated to 50000');
+        }
     }
     
     @IsTest
