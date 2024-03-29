@@ -164,10 +164,8 @@ public with sharing class DMLOperations {
                 opp.StageName = 'Qualification';
                 opp.CloseDate = closeDate;
                 opp.Amount = 50000;
-    
             }
   
-
         // Upsert the Opportunity.
            upsert opportunities;
     }
