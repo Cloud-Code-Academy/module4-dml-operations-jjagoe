@@ -167,13 +167,10 @@ public with sharing class DMLOperations {
                 oppList.add(opp);
                 
             }
-           
-
-        // Upsert the Opportunity
-
-
+  
     }
 
+    
     /**
      * Question 8
      * Insert or updates opportunities from list of names.
@@ -206,12 +203,9 @@ public with sharing class DMLOperations {
             upsert opportunitiesToUpsert;
         }
 
-        
     }
               
-            
-               
-    
+ 
     
     /**
      * Question 9
@@ -236,17 +230,15 @@ public with sharing class DMLOperations {
    
         
     }  else { // otherwise, create a new Account and set the description to New Account
-        Account acc = new Account();
-        acc.Name = accountName;
-        acc.Description = 'New Account';
-        accounts.add(acc);
-        insert accounts;
-        return acc;
+          Account acc = new Account();
+          acc.Name = accountName;
+          acc.Description = 'New Account';
+          accounts.add(acc);
+          insert accounts;
+          return acc;
     }
    
 }
-		
-	
 
     /**
      * Question 10
@@ -258,15 +250,31 @@ public with sharing class DMLOperations {
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
-		// Loop through each Contact
+	
+        Map<String, Account> accountMap = new Map<String, Account>();
+        // Loop through each Contact
+        for (Contact con : contactsToUpsert) {
+            // Extract the Account Name from Contact's LastName
+            String accountName = con.LastName;
+           // Get the account based on the name or create one if it doesn't exist
+            Account acc = accountMap.get(accountName);
+            if (acc == null) {
+                List<Account> existingAccounts = [SELECT Id, Name FROM Account WHERE Name = :accountName LIMIT 1];
 
-		// Extract the Account Name from Contact's LastName
+                if (!existingAccounts.isEmpty()) {
+                    acc = existingAccounts[0];
+                } else {
+                    // Create a new account if it doesn't exist
+                    acc = new Account(Name = accountName);
+                    accountMap.put(accountName, acc);
+                }
+                // Link the Contact to its Account using the Account Id
+                con.AccountId = acc.Id;
+            }
+               // Upsert the Contacts
+               upsert contactsToUpsert;
+		}
 
-		// Get the account based on the name or create one if it doesn't exist
-
-		// Link the Contact to its Account using the Account Id
-
-		// Upsert the Contacts
 	}
 
     /**
