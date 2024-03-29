@@ -170,7 +170,7 @@ public with sharing class DMLOperations {
   
     }
 
-    
+
     /**
      * Question 8
      * Insert or updates opportunities from list of names.
@@ -264,14 +264,14 @@ public with sharing class DMLOperations {
                 if (!existingAccounts.isEmpty()) {
                     acc = existingAccounts[0];
                 } else {
-                    // Create a new account if it doesn't exist
+                    // Create a new account if it doesn't exist.
                     acc = new Account(Name = accountName);
                     accountMap.put(accountName, acc);
                 }
-                // Link the Contact to its Account using the Account Id
+                // Link the Contact to its Account using the Account Id.
                 con.AccountId = acc.Id;
             }
-               // Upsert the Contacts
+               // Upsert the Contacts.
                upsert contactsToUpsert;
 		}
 
