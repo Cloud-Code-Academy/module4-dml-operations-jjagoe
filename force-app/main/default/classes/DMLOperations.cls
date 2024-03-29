@@ -160,7 +160,6 @@ public with sharing class DMLOperations {
 
         // Upsert the Opportunity
 
-
     }
 
     /**
@@ -179,9 +178,7 @@ public with sharing class DMLOperations {
             insert testAccount;
             Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
 
-   
         List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
-        
         // Loop through each Opportunity name
         for (String oppName : oppNames) {
             // Create a new Opportunity and associate it with the Account
@@ -190,11 +187,9 @@ public with sharing class DMLOperations {
             opp.AccountId = acc.Id;
             opp.StageName = 'Qualification';
             opp.CloseDate = Date.today().addMonths(3);
-            
             opportunitiesToUpsert.add(opp);
             upsert opportunitiesToUpsert;
         }
-
     }
   
     
