@@ -267,22 +267,31 @@ public with sharing class DMLOperations {
 
                 if (!existingAccounts.isEmpty()) {
                     acc = existingAccounts[0];
-                   
+                    con.AccountId = acc.Id;
+                    upsert contactsToUpsert;
                                                             
                 } else {
                     // Create a new account if it doesn't exist.
                     acc = new Account(Name = accountName, AccountNumber = con.AccountId);
                     accountMap.put(accountName, acc);
+                    con.AccountId = acc.Id;
+                upsert accountMap.values();
                    
                 }
                 // Link the Contact to its Account using the Account Id.
-                con.AccountId = acc.Id;
+                //con.AccountId = acc.Id;
+                //upsert accountMap.values();
             }
                
+               // Upsert the Contacts.
+               //upsert contactsToUpsert;
+
                // Upsert the Accounts
-              upsert accountMap.values();
-		}
+             // upsert accountMap.values();
+              
     }
+}
+
         
 
     /**

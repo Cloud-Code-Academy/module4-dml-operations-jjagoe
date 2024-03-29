@@ -239,8 +239,9 @@ public with sharing class DMLOperationsTest {
 			WHERE Id IN :testContacts
 		];
 		for (Contact c : upsertedContacts) {
+            System.assertEquals(c.LastName, c.Account.Name, 'Contact last name should match Account name');
 			System.assertNotEquals(null, c.AccountId, 'Contact should be linked to an Account');
-			System.assertEquals(c.LastName, c.Account.Name, 'Contact last name should match Account name');
+			
 		}
 	}
     
