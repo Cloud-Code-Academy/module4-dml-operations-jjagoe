@@ -183,7 +183,7 @@ public with sharing class DMLOperationsTest {
         List<Opportunity> updatedOpps = [SELECT Id, Name FROM Opportunity WHERE AccountId = :retrievedAcc.Id];
         
         // Assert that the Opportunities were successfully updated
-        System.assertEquals(oppNames.size(), oppNames.size(), 'The number of updated Opportunities should match the number of Opportunity names provided');
+        System.assertEquals(updatedOpps.size(), updatedOpps.size(), 'The number of updated Opportunities should match the number of Opportunity names provided');
     
         for (Opportunity opp : updatedOpps) {
             System.assert(oppNames.contains(opp.Name), 'All updated Opportunity names should be found in the database');

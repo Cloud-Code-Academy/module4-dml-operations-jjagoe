@@ -195,12 +195,8 @@ public with sharing class DMLOperations {
             upsert opportunitiesToUpsert;
         }
 
-        
     }
-              
-            
-               
-    
+  
     
     /**
      * Question 9
