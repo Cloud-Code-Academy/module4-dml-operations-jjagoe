@@ -183,11 +183,20 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
-           // Account testAccount = new Account(Name = accountName);
-           // insert testAccount;
-           // Account acc = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
+            List<Account> accList = [SELECT Id FROM Account WHERE Name = :accountName LIMIT 1];
 
-   
+            Account acc;
+            if (!accList.isEmpty()) {
+                // Account with the given name exists, use it
+                acc = accList[0];
+            }else {
+                // Account with the given name doesn't exist, create a new one
+                acc = new Account(Name = accountName);
+                insert acc;
+            }
+
+
+        // Create a list to store Opportunity records
         List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
         
         // Loop through each Opportunity name
@@ -195,17 +204,17 @@ public with sharing class DMLOperations {
             // Create a new Opportunity and associate it with the Account
             Opportunity opp = new Opportunity();
             opp.Name = oppName;
+            opp.AccountId = acc.Id;
             opp.StageName = 'Qualification';
             opp.CloseDate = Date.today().addMonths(3);
-            
             opportunitiesToUpsert.add(opp);
-            upsert opportunitiesToUpsert;
+            
+            
         }
-
+        upsert opportunitiesToUpsert;
     }
-              
  
-    
+  
     /**
      * Question 9
 	 * Upserts an Account with the specified name.
