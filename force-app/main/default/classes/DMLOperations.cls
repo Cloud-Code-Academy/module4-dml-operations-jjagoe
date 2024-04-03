@@ -195,22 +195,38 @@ public with sharing class DMLOperations {
                 insert acc;
             }
 
+        // Retrieve existing Opportunities related to the Account
+        List<Opportunity> existingOpps = [SELECT Id, Name FROM Opportunity WHERE AccountId = :acc.Id];
+    
+        // Create a map to store existing Opportunity names
+        Map<String, Opportunity> existingOppsMap = new Map<String, Opportunity>();
+        for (Opportunity opp : existingOpps) {
+            existingOppsMap.put(opp.Name, opp);
+        }
 
         // Create a list to store Opportunity records
         List<Opportunity> opportunitiesToUpsert = new List<Opportunity>();
-        
         // Loop through each Opportunity name
         for (String oppName : oppNames) {
-            // Create a new Opportunity and associate it with the Account
-            Opportunity opp = new Opportunity();
-            opp.Name = oppName;
-            opp.AccountId = acc.Id;
-            opp.StageName = 'Qualification';
-            opp.CloseDate = Date.today().addMonths(3);
-            opportunitiesToUpsert.add(opp);
-            
-            
-        }
+            // Check if an Opportunity with the same name already exists
+            if (existingOppsMap.containsKey(oppName)) {
+                // If exists, update the existing Opportunity
+                Opportunity existingOpp = existingOppsMap.get(oppName);
+                existingOpp.StageName = 'Qualification';
+                existingOpp.CloseDate = Date.today().addMonths(3);
+                opportunitiesToUpsert.add(existingOpp);
+           } else {
+            // If not exists, create a new Opportunity and associate it with the Account
+            Opportunity newOpp = new Opportunity(
+                Name = oppName,
+                AccountId = acc.Id,
+                StageName ='Prospecting',
+                CloseDate = Date.today().addDays(30)
+            );
+            opportunitiesToUpsert.add(newOpp);
+          }
+       }
+         // Perform upsert operation on the list of Opportunities
         upsert opportunitiesToUpsert;
     }
  
