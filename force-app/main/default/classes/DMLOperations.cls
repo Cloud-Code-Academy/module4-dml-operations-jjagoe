@@ -275,39 +275,62 @@ public with sharing class DMLOperations {
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
-	    
-        // Map to hold account names and corresponding accounts
-        Map<String, Account> accountMap = new Map<String, Account>();
-        // Loop through each Contact
-        for (Contact con : contactsToUpsert) {
-            // Extract the Account Name from Contact's LastName
-           
-            String accountName = con.LastName;
-          
-           // Get the account based on the name or create one if it doesn't exist
-            Account acc = accountMap.get(accountName);
-            
-            if (acc == null) {
-                List<Account> existingAccounts = [SELECT Id, Name FROM Account WHERE Name = :accountName];
+	    Set<String> accountNamesToQuery = new Set<String>();
+        // How can we get an account Name based on its name? How to get all accounts?
+        // Loop thru my contacts to get my account names, collect my accountNames via Set collection.
+        // This gives us all the accounts that we would possible want to query in our for loop.
+        for (Contact con : contactsToUpsert){
+            accountNamesToQuery.add(con.LastName);
+        }
+        // Now let's query those accounts.
+        List<Account> accountsFound = [
+            SELECT Id, Name
+            FROM Account
+            WHERE Name IN : accountNamesToQuery 
+        ]; 
+           //where name is in this set accountNamesToQuery
+           // This query is going to gives us either no accounts or every account with this LastName.
+           // Next were going to loop over those accounts and we need to make a Map, we need to get those
+           // accounts based on their name.
+        Map<String,Account> accountByAccountName = new Map<String, Account>();
+        for (Account acc : accountsFound){  // loop over accounts that we found.
+            acc.put(acc.Name, acc); // Now we our accounta based on the Name, if we populate this map.
+                                    // acc is the actual object as the value were mapping to.
+                                    // Note: Just because were put in this key value (acc.Name) does not mean
+                                    // were going to get an account back.
+        }
 
-                if (!existingAccounts.isEmpty()) {
-                    acc = existingAccounts[0];
-                   
-                                                            
-                } else {
-                    // Create a new account if it doesn't exist.
-                    acc = new Account(Name = accountName, AccountNumber = con.AccountId);
-                    accountMap.put(accountName, acc);
-                   
-                }
-                // Link the Contact to its Account using the Account Id.
-                con.AccountId = acc.Id;
+        // Loop through each Contact
+        for(Contact con : contactsToUpsert){
+            // Get the account based on the name or create one if it doesn't exist
+            if(accountByAccountName.containsKey(con.LastName)){
+                continue;
             }
-               
-               // Upsert the Accounts
-              upsert accountMap.values();
-		}
-    }
+            Account parentAccount = new Account(Name = con.LastName);
+            accountByAccountName.put(parentAccount.Name, parentAccount);
+                 // This account doesn't exist in our database it doesn't have an Id yet. 
+                 // so we need to insert it into our database
+                 // insert acc;  If we insert acc here, we are doing a DML inside our for loop which is a no - no.
+                 // we need to collect all these accounts first. The easily way to do this is to put it back into our map because 
+                 // it didn't exist in our map to begin with. We can insert it later.
+            
+            // Same as 
+            // Account parentAcc = accountByAccountName.get(con.LastName);
+            // if(parentAcc == null){ // means we didn't find it.
+        }
+
+        // Must do upsert outside of our for loop
+        Database.upsert(accountByAccountName.values()); // this will update everything in the map. Accounts will have a Id after this operation.
+        // Were going to loop over our cantacts one last time to link contact name to Account name.
+        for(Contact con : contactsToUpsert){
+            Account parentAccount = accountByAccountName.get(con.LastName);
+            con.AccountId = parentAccount.Id;
+        }
+          // Upsert the Contacts
+          upsert contactsToUpsert;
+        }
+
+    
         
 
     /**
