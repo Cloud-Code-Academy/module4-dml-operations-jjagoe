@@ -139,10 +139,10 @@ public with sharing class DMLOperationsTest {
     
         // Retrieve the Opportunity from the database
         Opportunity[] retrievedOpp = [SELECT Id, Name, CloseDate, StageName, Amount FROM Opportunity];
-    
+      
         // Assert that the Opportunity was successfully upserted
-        System.assertEquals(opportunities.size(), retrievedOpp.size(), 'The number of upserted Opportunities should match the number of Opportunity names provided');
-        for (Opportunity opp : retrievedOpp) {
+        System.assertEquals(Opportunities.size(), retrievedOpp.size(), 'The number of upserted Opportunities should match the number of Opportunity names provided');
+        for (Opportunity opp : Opportunities) {
             System.assertEquals('Qualification', opp.StageName, 'The stage should be updated to Qualification');
             System.assertEquals(Date.today().addMonths(3), opp.CloseDate, 'The CloseDate should be updated to 3 months from today');
             System.assertEquals(50000, opp.Amount, 'The Amount should be updated to 50000');
@@ -219,7 +219,7 @@ public with sharing class DMLOperationsTest {
 	static void testUpsertAccountsWithContacts() {
 		Account testAccount = new Account(Name = 'Doe');
 		insert testAccount;
-		// Create test contacts with last names matching account names
+		// Create test contacts with last names matching account names.
 		List<Contact> testContacts = new List<Contact>{
 			new Contact(LastName = 'Doe', FirstName = 'John'),
 			new Contact(LastName = 'Smith', FirstName = 'Jane')
