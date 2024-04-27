@@ -282,53 +282,40 @@ public with sharing class DMLOperations {
         for (Contact con : contactsToUpsert){
             accountNamesToQuery.add(con.LastName);
         }
-        // Now let's query those accounts.
-        List<Account> accountsFound = [
+        
+        // This account doesn't exist in our database it doesn't have an Id yet. 
+        // so we need to insert it into our database
+        // insert acc;  If we insert acc here, we are doing a DML inside our for loop which is a no - no.
+        // we need to collect all these accounts first. The easily way to do this is to put it back into our map because 
+        // it didn't exist in our map to begin with. We can insert it later.
+        Map<String, Account> parentAccountByAccountName = new Map<String, Account>();
+        for(Account acc : [
             SELECT Id, Name
             FROM Account
-            WHERE Name IN : accountNamesToQuery 
-        ]; 
-           //where name is in this set accountNamesToQuery
-           // This query is going to gives us either no accounts or every account with this LastName.
-           // Next were going to loop over those accounts and we need to make a Map, we need to get those
-           // accounts based on their name.
-        Map<String,Account> accountByAccountName = new Map<String, Account>();
-        for (Account acc : accountsFound){  // loop over accounts that we found.
-            acc.put(acc.Name, acc); // Now we our accounta based on the Name, if we populate this map.
-                                    // acc is the actual object as the value were mapping to.
-                                    // Note: Just because were put in this key value (acc.Name) does not mean
-                                    // were going to get an account back.
+            WHERE Name IN :accountNamesToQuery
+        ]) {
+            parentAccountByAccountName.put(acc.Name, acc);
         }
-
-        // Loop through each Contact
-        for(Contact con : contactsToUpsert){
+		// Loop through each Contact
+        for(Contact con : contactsToUpsert) {
             // Get the account based on the name or create one if it doesn't exist
-            if(accountByAccountName.containsKey(con.LastName)){
+            if(parentAccountByAccountName.containsKey(con.LastName)) {
                 continue;
             }
-            Account parentAccount = new Account(Name = con.LastName);
-            accountByAccountName.put(parentAccount.Name, parentAccount);
-                 // This account doesn't exist in our database it doesn't have an Id yet. 
-                 // so we need to insert it into our database
-                 // insert acc;  If we insert acc here, we are doing a DML inside our for loop which is a no - no.
-                 // we need to collect all these accounts first. The easily way to do this is to put it back into our map because 
-                 // it didn't exist in our map to begin with. We can insert it later.
-            
-            // Same as 
-            // Account parentAcc = accountByAccountName.get(con.LastName);
-            // if(parentAcc == null){ // means we didn't find it.
+            parentAccountByAccountName.put(con.LastName, new Account(Name = con.LastName));
         }
-
         // Must do upsert outside of our for loop
-        Database.upsert(accountByAccountName.values()); // this will update everything in the map. Accounts will have a Id after this operation.
+        Database.upsert(parentAccountByAccountName.values());
         // Were going to loop over our cantacts one last time to link contact name to Account name.
-        for(Contact con : contactsToUpsert){
-            Account parentAccount = accountByAccountName.get(con.LastName);
+        for(Contact con : contactsToUpsert) {
+            //con.AccountId = parentAccountByAccountName.get(con.LastName)?.Id;
+            Account parentAccount = parentAccountByAccountName.get(con.LastName);
             con.AccountId = parentAccount.Id;
         }
-          // Upsert the Contacts
-          upsert contactsToUpsert;
-        }
+		// Upsert the Contacts
+        upsert contactsToUpsert;
+	}
+        
 
     
         
